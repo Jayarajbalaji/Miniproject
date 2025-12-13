@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  .admin-dashboard-container {
+    min-height: calc(100vh - 120px);
+    background: radial-gradient(circle at top, #111827 0%, #020617 55%, #000000 100%);
+    padding: 32px 20px;
+  }
+
+  .admin-dashboard-header {
+    max-width: 1100px;
+    margin: 0 auto 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #e5e7eb;
+  }
+
+  .admin-dashboard-title {
+    font-size: 1.9rem;
+    font-weight: 700;
+  }
+
+  .admin-dashboard-subtitle {
+    font-size: 0.95rem;
+    color: #9ca3af;
+  }
+
+  .admin-dashboard-card {
+    max-width: 1100px;
+    margin: 0 auto 20px;
+    background: rgba(15, 23, 42, 0.95);
+    border-radius: 16px;
+    padding: 20px 20px 24px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.8);
+    border: 1px solid rgba(148,163,184,0.4);
+    width: 90%;
+  }
+
+  .admin-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #e5e7eb;
+    margin-bottom: 10px;
+  }
+
+  .admin-meta {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    margin-bottom: 4px;
+  }
+
+  .admin-table-wrapper {
+    overflow-x: auto;
+  }
+
+  table.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    color: #e5e7eb;
+  }
+
+  table.admin-table thead {
+    background: rgba(30, 64, 175, 0.8);
+  }
+
+  table.admin-table th,
+  table.admin-table td {
+    padding: 10px 12px;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  table.admin-table tbody tr:nth-child(even) {
+    background: rgba(15, 23, 42, 0.9);
+  }
+
+  table.admin-table tbody tr:nth-child(odd) {
+    background: rgba(17, 24, 39, 0.9);
+  }
+
+  table.admin-table tbody tr:hover {
+    background: rgba(55, 65, 81, 0.9);
+  }
+
+  .admin-empty {
+    text-align: center;
+    padding: 30px 10px;
+    color: #9ca3af;
+  }
+
+  .badge-registered {
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+</style>
+
+<div class="admin-dashboard-container">
+
+  <!-- HEADER -->
+  <div class="admin-dashboard-header">
+    <div>
+      <div class="admin-dashboard-title">Admin Dashboard</div>
+      <div class="admin-dashboard-subtitle">
+        Manage voters, elections, candidates, and results
+      </div>
+    </div>
+  </div>
+
+  <!-- ELECTION CONTROL -->
+  <div class="admin-dashboard-card">
+    <div class="admin-section-title">Election Control</div>
+
+    {% if current_election %}
+      <div class="admin-meta">
+        Active election: <strong>{{ current_election.name }}</strong>
+      </div>
+      <div class="admin-meta">
+        Started at: {{ current_election.started_at }}
+      </div>
+      <div class="admin-meta">
+        Total votes: <strong>{{ total_votes }}</strong>
+      </div>
+
+      <!-- ADD CANDIDATE -->
+      <hr style="margin:14px 0; border-color:#334155;">
+
+      <div class="admin-section-title">Add Candidate</div>
+      <form method="POST" action="{{ url_for('admin_add_candidate') }}"
+            style="display:flex; gap:8px; flex-wrap:wrap;">
+
+        <input type="text" name="candidate_name" required
+               placeholder="Candidate name"
+               style="flex:1; min-width:180px; padding:6px 12px;
+               border-radius:999px; border:1px solid #4b5563;
+               background:#020617; color:#e5e7eb;">
+
+        <button type="submit"
+                style="padding:6px 16px; border:none;
+                border-radius:999px; background:#3b82f6;
+                color:#fff; font-weight:600;">
+          Add Candidate
+        </button>
+      </form>
+
+      <!-- CLOSE ELECTION -->
+      <form method="POST" action="{{ url_for('admin_close_election') }}"
+            style="margin-top:14px;">
+        <button type="submit"
+                style="padding:6px 16px; border:none;
+                border-radius:999px; background:#ef4444;
+                color:#fff; font-weight:600;">
+          Close Election & Publish Result
+        </button>
+      </form>
+
+    {% else %}
+      <div class="admin-meta">No active election.</div>
+
+      <form method="POST" action="{{ url_for('admin_start_election') }}"
+            style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+        <input type="text" name="name"
+               placeholder="Election name (optional)"
+               style="flex:1; min-width:180px; padding:6px 10px;
+               border-radius:999px; border:1px solid #4b5563;
+               background:#020617; color:#e5e7eb;">
+        <button type="submit"
+                style="padding:6px 16px; border:none;
+                border-radius:999px; background:#22c55e;
+                color:#fff; font-weight:600;">
+          Start New Election
+        </button>
+      </form>
+    {% endif %}
+  </div>
+
+  <!-- CANDIDATES & RESULTS -->
+  <div class="admin-dashboard-card">
+    <div class="admin-section-title">Candidates & Results</div>
+
+    {% if not current_election %}
+      <div class="admin-empty">No active election.</div>
+    {% elif election_candidates %}
+      <div class="admin-table-wrapper">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Candidate Name</th>
+              <th>Votes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in election_candidates %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ c.name }}</td>
+              <td>{{ c.vote_count }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="admin-empty">No candidates added yet.</div>
+    {% endif %}
+  </div>
+{% if not current_election %}
+  <div style="margin-top:16px;">
+    <a href="{{ url_for('election_results') }}" style="text-decoration:none;">
+      <button style="
+        align center;
+        padding:8px 18px;
+        border:none;
+        border-radius:999px;
+        background:#22c55e;
+        color:#ffffff;
+        font-size:0.85rem;
+        font-weight:600;
+        cursor:pointer;
+      ">
+        📊 View Election Results
+      </button>
+    </a>
+  </div>
+{% endif %}
+
+  <!-- VOTERS -->
+  <div class="admin-dashboard-card">
+    <div class="admin-section-title">Voter Details</div>
+
+    {% if registrations %}
+      <div class="admin-table-wrapper">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Voter ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in registrations %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ r.name }}</td>
+              <td>{{ r.email or 'N/A' }}</td>
+              <td>{{ r.phone }}</td>
+              <td><span class="badge-registered">{{ r.id }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="admin-empty">No voters registered.</div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

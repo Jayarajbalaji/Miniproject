@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  .register-container {
+    min-height: calc(100vh - 120px);
+    background: #f2f4f7;
+    padding: 40px 20px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  
+  .register-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+    width: 50%;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  
+  .register-title {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .register-subtitle {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1rem;
+    text-align: center;
+  }
+  
+  .register-form {
+    display: grid;
+    gap: 20px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  
+  .form-group input {
+    padding: 14px 16px;
+    border: 1.5px solid #d0d5dd;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+  
+  .face-capture-section {
+    background: #f8f9fa;
+    padding: 24px;
+    border-radius: 12px;
+    margin: 20px 0;
+    text-align: center;
+    border: 1px dashed #d0d5dd;
+  }
+  
+  .face-capture-title {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .video-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #e4e7ec;
+  }
+  
+  #video {
+    border-radius: 10px;
+    border: 2px solid #c7d2fe;
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .capture-btn {
+    padding: 12px 30px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin: 10px;
+    width: 100%;
+  }
+  
+  .capture-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+  
+  #preview {
+    margin-top: 20px;
+  }
+  
+  #preview img {
+    border-radius: 10px;
+    border: 3px solid #28a745;
+    max-width: 100%;
+  }
+  
+  .submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 20px;
+  }
+  
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+  
+  .register-icon {
+    font-size: 4rem;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .register-card {
+      padding: 30px 20px;
+    }
+    
+    .register-title {
+      font-size: 1.8rem;
+    }
+    
+    #video {
+      width: 100%;
+      max-width: 320px;
+    }
+  }
+</style>
+
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-icon">📝</div>
+    <h2 class="register-title">Create Your Account</h2>
+    <p class="register-subtitle">Register for secure e-voting with face recognition</p>
+    
+    <form id="regForm" method="POST" action="{{ url_for('register') }}" class="register-form">
+      <div class="form-group">
+        <label for="name">Full Name *</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email">
+      </div>
+      
+      <div class="form-group">
+        <label for="phone">Phone Number (E.164 format) *</label>
+        <input type="text" id="phone" name="phone" required placeholder="+911234567890">
+      </div>
+      
+      <input type="hidden" name="face_image" id="face_image">
+      
+      <div class="face-capture-section">
+        <h3 class="face-capture-title">👤 Capture Your Face</h3>
+        <div class="video-container">
+          <video id="video" autoplay playsinline width="320" height="240"></video>
+        </div>
+        <button type="button" id="captureBtn" class="capture-btn">📸 Capture Photo</button>
+        <canvas id="canvas" width="320" height="240" style="display:none"></canvas>
+        <div id="preview"></div>
+      </div>
+      
+      <button type="submit" class="submit-btn">Register & Send OTP</button>
+    </form>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/webcam.js') }}"></script>
+{% endblock %}

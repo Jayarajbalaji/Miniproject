@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+  
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow-x: hidden;
+  }
+  
+  section {
+    margin: 0 !important;
+    padding: 20px;
+    max-width: none !important;
+    width: 100% !important;
+  }
+  
+  /* Override any container max-width */
+  .features-section,
+  .how-it-works,
+  .cta-section,
+  .hero-section {
+    max-width: 100vw !important;
+    width: 100vw !important;
+  }
+  
+  .hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0;
+    text-align: center;
+    margin: 0;
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+  }
+  
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 100px 5%;
+    margin: 0 auto;
+  }
+  
+  .hero-title {
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  .hero-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    opacity: 0.95;
+    line-height: 1.6;
+  }
+  
+  .hero-icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+    display: block;
+  }
+  
+  .features-section {
+    margin: 0;
+    padding: 80px 5%;
+    width: 100vw;
+    background: white;
+  }
+  
+  .features-section .section-title {
+    width: 100%;
+    padding: 0 5%;
+  }
+  
+  .features-grid {
+    width: 100%;
+    padding: 0 5%;
+  }
+  
+  .section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+    color: #333;
+  }
+  
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+    width: 100%;
+  }
+  
+  .feature-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+  }
+  
+  .feature-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    display: block;
+  }
+  
+  .feature-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #667eea;
+  }
+  
+  .feature-description {
+    color: #666;
+    line-height: 1.6;
+  }
+  
+  .cta-section {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 80px 5%;
+    text-align: center;
+    margin: 0;
+    width: 100vw;
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .cta-content {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  .cta-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .cta-description {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  
+  .btn-primary, .btn-secondary {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 50px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+    min-width: 200px;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  }
+  
+  .btn-secondary {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+  }
+  
+  .btn-secondary:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+  }
+  
+  .how-it-works {
+    margin: 0;
+    padding: 80px 5%;
+    width: 100vw;
+    background: #f8f9fa;
+  }
+  
+  .how-it-works .section-title {
+    width: 100%;
+    padding: 0 5%;
+  }
+  
+  .steps-container {
+    width: 100%;
+    padding: 0 5%;
+  }
+  
+  .steps-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+    width: 100%;
+  }
+  
+  .step-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    text-align: center;
+    position: relative;
+  }
+  
+  .step-number {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  }
+  
+  .step-icon {
+    font-size: 3rem;
+    margin: 20px 0 15px 0;
+  }
+  
+  .step-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .step-description {
+    color: #666;
+    line-height: 1.6;
+  }
+  
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.2rem;
+    }
+    
+    .action-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .btn-primary, .btn-secondary {
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+</style>
+
+<div class="hero-section">
+  <div class="hero-content">
+    <span class="hero-icon">🗳️</span>
+    <h1 class="hero-title">Secure E-Voting System</h1>
+    <p class="hero-subtitle">
+      Vote securely with advanced face recognition and OTP verification. 
+      Your voice matters, and we ensure it's protected.
+    </p>
+  </div>
+</div>
+
+<div class="features-section">
+  <h2 class="section-title">Why Choose Our E-Voting System?</h2>
+  
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">🔒</span>
+      <h3 class="feature-title">Secure Authentication</h3>
+      <p class="feature-description">
+        Multi-factor authentication using face recognition and OTP verification 
+        ensures only authorized voters can cast their votes.
+      </p>
+    </div>
+    
+    <div class="feature-card">
+      <span class="feature-icon">👤</span>
+      <h3 class="feature-title">Face Recognition</h3>
+      <p class="feature-description">
+        Advanced biometric technology verifies your identity using facial 
+        recognition, making the voting process secure and convenient.
+      </p>
+    </div>
+    
+    <div class="feature-card">
+      <span class="feature-icon">📱</span>
+      <h3 class="feature-title">OTP Verification</h3>
+      <p class="feature-description">
+        Receive a one-time password on your registered mobile number for 
+        an additional layer of security during login.
+      </p>
+    </div>
+    
+    <div class="feature-card">
+      <span class="feature-icon">🆔</span>
+      <h3 class="feature-title">Digital ID Card</h3>
+      <p class="feature-description">
+        Get your official digital voter ID card with all your details, 
+        downloadable as a high-quality image.
+      </p>
+    </div>
+    
+    <div class="feature-card">
+      <span class="feature-icon">⚡</span>
+      <h3 class="feature-title">Fast & Efficient</h3>
+      <p class="feature-description">
+        Quick registration and voting process that saves time while 
+        maintaining the highest security standards.
+      </p>
+    </div>
+    
+    <div class="feature-card">
+      <span class="feature-icon">✅</span>
+      <h3 class="feature-title">Verified Identity</h3>
+      <p class="feature-description">
+        Every voter is verified through multiple checkpoints to ensure 
+        the integrity of the voting process.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="how-it-works">
+  <h2 class="section-title">How It Works</h2>
+  
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <div class="step-icon">📝</div>
+      <h3 class="step-title">Register</h3>
+      <p class="step-description">
+        Create your account by providing your details and capturing your face 
+        for biometric verification.
+      </p>
+    </div>
+    
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <div class="step-icon">🔐</div>
+      <h3 class="step-title">Verify OTP</h3>
+      <p class="step-description">
+        Verify your phone number by entering the OTP sent to your mobile 
+        device to complete registration.
+      </p>
+    </div>
+    
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <div class="step-icon">🔑</div>
+      <h3 class="step-title">Login</h3>
+      <p class="step-description">
+        Login with your phone number, verify OTP, and authenticate using 
+        face recognition.
+      </p>
+    </div>
+    
+    <div class="step-card">
+      <div class="step-number">4</div>
+      <div class="step-icon">🗳️</div>
+      <h3 class="step-title">Vote</h3>
+      <p class="step-description">
+        Access your dashboard, view your ID card, and cast your vote securely 
+        through the platform.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="cta-section">
+  <div class="cta-content">
+    <h2 class="cta-title">Ready to Get Started?</h2>
+    <p class="cta-description">
+      Join thousands of voters who trust our secure e-voting platform. 
+      Register now and be part of the digital democracy revolution.
+    </p>
+    <div class="action-buttons">
+      <a href="{{ url_for('register') }}" class="btn-primary">Register Now</a>
+      <a href="{{ url_for('login') }}" class="btn-secondary">Login</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+

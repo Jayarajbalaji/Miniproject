@@ -1,0 +1,395 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  .dashboard-container {
+    min-height: calc(100vh - 120px);
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 40px 20px;
+    width: 100vw;
+    margin: 0;
+  }
+  
+  .dashboard-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .dashboard-title {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  .dashboard-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+  }
+  
+  .id-card-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0;
+    width: 40%;
+  }
+  
+  .id-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 25px;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .id-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+  }
+  
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  .id-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .id-card-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .id-card-logo-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    border: 2px solid white;
+  }
+  
+  .id-card-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .id-card-badge {
+    background: rgba(255,255,255,0.2);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .id-card-body {
+    display: flex;
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .id-card-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+    border: 3px solid white;
+    object-fit: cover;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .id-card-photo img {
+    width: 100%;
+    height: 100%;
+    border-radius: 7px;
+    object-fit: cover;
+  }
+  
+  .id-card-photo-placeholder {
+    font-size: 40px;
+  }
+  
+  .id-card-details {
+    flex: 1;
+  }
+  
+  .id-card-field {
+    margin-bottom: 12px;
+  }
+  
+  .id-card-label {
+    font-size: 11px;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  
+  .id-card-value {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  .id-card-footer {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255,255,255,0.3);
+    position: relative;
+    z-index: 1;
+    font-size: 11px;
+    opacity: 0.9;
+  }
+  
+  .download-button-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .download-id-btn {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+  
+  .download-id-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+  }
+  
+  .download-id-btn:active {
+    transform: translateY(0);
+  }
+  
+  .download-id-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+</style>
+
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h2 class="dashboard-title">Welcome, {{ user_name }}! 👋</h2>
+    <p class="dashboard-subtitle">Your E-Voting Dashboard</p>
+  </div>
+
+{% if user_data %}
+<div class="id-card-container">
+  <div class="id-card">
+    <div class="id-card-header">
+      <div class="id-card-logo">
+        <div class="id-card-logo-icon">🗳️</div>
+        <h3 class="id-card-title">E-Voting ID Card</h3>
+      </div>
+      <span class="id-card-badge">VERIFIED</span>
+    </div>
+    
+    <div class="id-card-body">
+      <div class="id-card-photo" id="userPhotoContainer">
+        {% if user_data.get('image_file') %}
+          <img id="userPhoto" src="{{ url_for('user_image', filename=user_data.image_file) }}" alt="User Photo" crossorigin="anonymous">
+        {% else %}
+          <div class="id-card-photo-placeholder">👤</div>
+        {% endif %}
+      </div>
+      
+      <div class="id-card-details">
+        <div class="id-card-field">
+          <div class="id-card-label">Full Name</div>
+          <div class="id-card-value">{{ user_data.name }}</div>
+        </div>
+        
+        <div class="id-card-field">
+          <div class="id-card-label">Email Address</div>
+          <div class="id-card-value">{{ user_data.email or 'N/A' }}</div>
+        </div>
+        
+        <div class="id-card-field">
+          <div class="id-card-label">Phone Number</div>
+          <div class="id-card-value">{{ user_data.phone }}</div>
+        </div>
+        
+        <div class="id-card-field">
+          <div class="id-card-label">Voter ID</div>
+          <div class="id-card-value" style="font-family: monospace; font-size: 14px;">{{ user_data.id }}</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="id-card-footer">
+      <div>Registered: {{ user_data.registered_at[:10] if user_data.registered_at else 'N/A' }}</div>
+      <div style="margin-top: 5px;">This is your official E-Voting identification card</div>
+    </div>
+  </div>
+  
+  <div class="download-button-container">
+    <button class="download-id-btn" id="downloadIdCard" onclick="downloadIdCard()">
+      📥 Download ID Card as Image
+    </button>
+  </div>
+</div>
+{% endif %}
+{% if current_election %}
+  <div style="width:100%; display:flex; justify-content:center; margin-top:30px;">
+    <a href="{{ url_for('vote_page') }}" style="text-decoration:none;">
+      <button style="
+        padding: 12px 36px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #6a7cf5, #7b5fd6);
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 10px 25px rgba(106,124,245,0.35);
+      ">
+        🗳️ VOTE 
+      </button>
+    </a>
+  </div>
+{% else %}
+  <p style="text-align:center; color:#6b7280; margin-top:30px;">
+🗳️ You have already voted or No active election right now  </p>
+{% endif %}
+
+{% if not current_election %}
+<div style="text-align:center; margin-top:20px;">
+  <a href="{{ url_for('election_results') }}">
+    <button style="
+      padding:10px 30px;
+      border-radius:12px;
+      background:linear-gradient(135deg,#22c55e,#16a34a);
+      color:white;
+      font-weight:700;
+      border:none;
+      cursor:pointer;">
+      📊 View Election Results
+    </button>
+  </a>
+</div>
+{% endif %}
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+function downloadIdCard() {
+  const button = document.getElementById('downloadIdCard');
+  const card = document.querySelector('.id-card');
+  
+  if (!card) {
+    alert('ID card not found');
+    return;
+  }
+  
+  button.disabled = true;
+  button.textContent = '⏳ Generating...';
+  
+  // Ensure images are loaded with CORS
+  const images = card.querySelectorAll('img');
+  let imagesLoaded = 0;
+  const totalImages = images.length;
+  
+  // Function to generate the card
+  function generateCard() {
+    html2canvas(card, {
+      backgroundColor: '#667eea',
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      allowTaint: false,
+      width: card.offsetWidth,
+      height: card.offsetHeight,
+      onclone: function(clonedDoc) {
+        // Remove animation from cloned document
+        const clonedCard = clonedDoc.querySelector('.id-card');
+        if (clonedCard) {
+          clonedCard.style.animation = 'none';
+          // Also stop the ::before pseudo-element animation
+          const style = clonedDoc.createElement('style');
+          style.textContent = '.id-card::before { animation: none !important; }';
+          clonedDoc.head.appendChild(style);
+        }
+      }
+    }).then(function(canvas) {
+      // Convert canvas to blob and download
+      canvas.toBlob(function(blob) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const userId = '{{ user_data.id if user_data else "card" }}';
+        link.download = 'E-Voting-ID-Card-' + userId + '.png';
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        button.disabled = false;
+        button.textContent = '📥 Download ID Card as Image';
+      }, 'image/png', 1.0);
+    }).catch(function(error) {
+      console.error('Error generating ID card:', error);
+      alert('Error generating ID card image. Please try again.');
+      button.disabled = false;
+      button.textContent = '📥 Download ID Card as Image';
+    });
+  }
+  
+  // Wait for all images to load
+  if (totalImages === 0) {
+    generateCard();
+    return;
+  }
+  
+  let checkComplete = function() {
+    imagesLoaded++;
+    if (imagesLoaded === totalImages) {
+      // Small delay to ensure rendering is complete
+      setTimeout(generateCard, 100);
+    }
+  };
+  
+  images.forEach(img => {
+    if (img.complete && img.naturalHeight !== 0) {
+      checkComplete();
+    } else {
+      img.onload = checkComplete;
+      img.onerror = checkComplete;
+      // Force reload if needed
+      if (img.src) {
+        img.src = img.src + (img.src.indexOf('?') > -1 ? '&' : '?') + 't=' + new Date().getTime();
+      }
+    }
+  });
+}
+</script>
+{% endblock %}

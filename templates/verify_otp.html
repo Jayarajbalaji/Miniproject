@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  .otp-container {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 40px 20px;
+    width: 100vw;
+    margin: 0;
+  }
+  
+  .otp-card {
+    background: white;
+    border-radius: 20px;
+    padding: 50px 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    max-width: 500px;
+    width: 40%;
+    text-align: center;
+  }
+  
+  .otp-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+  }
+  
+  .otp-title {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  .otp-subtitle {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1rem;
+  }
+  
+  .phone-display {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+    color: #333;
+  }
+  
+  .phone-display strong {
+    color: #667eea;
+  }
+  
+  .otp-form {
+    text-align: left;
+  }
+  
+  .otp-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  
+  .otp-form input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    text-align: center;
+    letter-spacing: 10px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s;
+  }
+  
+  .otp-form input:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+  
+  .verify-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .verify-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+  
+  @media (max-width: 768px) {
+    .otp-card {
+      padding: 40px 30px;
+    }
+    
+    .otp-title {
+      font-size: 1.6rem;
+    }
+  }
+</style>
+
+<div class="otp-container">
+  <div class="otp-card">
+    <div class="otp-icon">🔐</div>
+    <h2 class="otp-title">Verify OTP</h2>
+    <p class="otp-subtitle">Enter the code sent to your phone</p>
+    
+    <div class="phone-display">
+      📱 OTP sent to: <strong>{{ phone }}</strong>
+    </div>
+    
+    <form method="POST" class="otp-form">
+      <label for="otp">Enter OTP Code</label>
+      <input type="text" id="otp" name="otp" required placeholder="0000" maxlength="4" pattern="[0-9]{4}">
+      <button type="submit" class="verify-btn">✓ Verify OTP</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

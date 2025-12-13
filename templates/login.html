@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+.login-container {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f2f4f7;
+    padding: 20px;               /* smaller padding like screenshot */
+    margin: 0 auto;              /* removed extra spacing */
+}
+
+.login-card {
+    background: #ffffff;
+    border-radius: 12px;         /* reduced to match reference */
+    padding: 28px 26px;          /* compact card padding */
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);  /* softer, smaller shadow */
+    max-width: 360px;            /* screenshot card width */
+    width: 40%;
+    text-align: center;
+}
+
+  
+  .login-title {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  .login-subtitle {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1rem;
+  }
+  
+  .login-form {
+    text-align: left;
+  }
+  
+  .login-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  
+  .login-form input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #d0d5dd;
+    border-radius: 10px;
+    font-size: 1rem;
+    margin-bottom: 18px;
+    transition: border-color 0.3s;
+  }
+  
+  .login-form input:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+  
+  .login-btn {
+    width: 100%;
+    padding: 14px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 10px;
+  }
+  
+  .login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+  
+  .login-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .login-card {
+      padding: 40px 30px;
+    }
+    
+    .login-title {
+      font-size: 1.6rem;
+    }
+  }
+</style>
+
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-icon">🔐</div>
+    <h2 class="login-title">Log in to E-Voting</h2>
+    <p class="login-subtitle">Secure access using OTP + face verification</p>
+    <form method="POST" class="login-form">
+      <label for="phone">Phone Number</label>
+      <input type="text" id="phone" name="phone" required placeholder="+911234567890">
+      <button type="submit" class="login-btn">Send OTP</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cast Your Vote</title>
+</head>
+<body style="background:#f3f4f6; font-family: system-ui;">
+
+<div style="text-align: center; margin-top: 40px; padding: 30px; background: white;
+            border-radius: 15px; max-width: 700px; margin-left: auto; margin-right: auto;">
+
+  <h3 style="color: #333; margin-bottom: 15px;">🗳️ Voting Section</h3>
+
+  {% if not current_election %}
+    <p style="color: #666; line-height: 1.6;">
+      There is currently <strong>no active election</strong>.
+    </p>
+
+  {% else %}
+    <p style="color: #666; margin-bottom: 20px;">
+      Current election: <strong>{{ current_election.name }}</strong>
+    </p>
+
+    {% if user_vote %}
+      <p style="color: #16a34a; font-weight: 600;">
+        ✅ You have already voted.
+      </p>
+      <p style="color: #4b5563;">
+        Results will be shown after election ends.
+      </p>
+    {% else %}
+
+      {% if election_candidates %}
+        <form method="POST" action="{{ url_for('cast_vote') }}" style="text-align:left; max-width:420px; margin:auto;">
+          <p style="font-weight:600;">Select your candidate:</p>
+
+          {% for c in election_candidates %}
+            <label style="display:block; padding:8px; border:1px solid #e5e7eb;
+                          border-radius:8px; margin-bottom:8px;">
+              <input type="radio" name="candidate_id" value="{{ c.id }}" required>
+              {{ c.name }}
+            </label>
+          {% endfor %}
+
+          <button type="submit" style="margin-top:15px; padding:10px 24px;
+                  border:none; border-radius:8px; background:#2563eb; color:white;">
+            Cast Vote
+          </button>
+        </form>
+      {% else %}
+        <p>No candidates available.</p>
+      {% endif %}
+
+    {% endif %}
+  {% endif %}
+</div>
+
+<div style="text-align:center; margin-top:20px;">
+  <a href="{{ url_for('dashboard') }}">⬅ Back to Dashboard</a>
+</div>
+
+</body>
+</html>

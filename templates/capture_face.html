@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  .capture-container {
+    min-height: calc(100vh - 120px);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 40px 20px;
+    width: 100vw;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .capture-card {
+    background: white;
+    border-radius: 20px;
+    padding: 50px 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    max-width: 700px;
+    width: 40%;
+    text-align: center;
+  }
+  
+  .capture-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+  }
+  
+  .capture-title {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  .capture-subtitle {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1rem;
+  }
+  
+  .video-wrapper {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+  }
+  
+  #video {
+    border-radius: 10px;
+    border: 3px solid #667eea;
+    max-width: 100%;
+    height: auto;
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .capture-btn {
+    padding: 15px 40px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin: 10px;
+  }
+  
+  .capture-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+  
+  .submit-btn {
+    padding: 15px 40px;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 20px;
+  }
+  
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+  }
+  
+  #preview {
+    margin-top: 20px;
+  }
+  
+  #preview img {
+    border-radius: 10px;
+    border: 3px solid #28a745;
+    max-width: 100%;
+    margin-top: 20px;
+  }
+  
+  .auto-capture-notice {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    color: #856404;
+    text-align: left;
+  }
+  
+  @media (max-width: 768px) {
+    .capture-card {
+      padding: 30px 20px;
+    }
+    
+    .capture-title {
+      font-size: 1.6rem;
+    }
+    
+    #video {
+      max-width: 100%;
+    }
+  }
+</style>
+
+<div class="capture-container">
+  <div class="capture-card">
+    <div class="capture-icon">📸</div>
+    <h2 class="capture-title">Face Recognition</h2>
+    <p class="capture-subtitle">
+      {% if purpose == 'login' %}
+        Please position your face in front of the camera for verification
+      {% else %}
+        Capture your face for registration
+      {% endif %}
+    </p>
+    
+    {% if purpose == 'login' %}
+    <div class="auto-capture-notice">
+      <strong>ℹ️ Auto-capture mode:</strong> Your face will be automatically captured when detected. Please look directly at the camera.
+    </div>
+    {% endif %}
+    
+    <form id="capForm" method="POST" data-purpose="{{ purpose or 'action' }}">
+      <input type="hidden" name="face_image" id="face_image">
+      
+      <div class="video-wrapper">
+        <video id="video" autoplay playsinline width="500" height="375"></video>
+      </div>
+      
+      <canvas id="canvas" width="500" height="375" style="display:none"></canvas>
+      
+      {% if purpose != 'login' %}
+      <button type="button" id="captureBtn" class="capture-btn">📸 Capture Photo</button>
+      {% endif %}
+      
+      <div id="preview"></div>
+      
+      {% if purpose != 'login' %}
+      <button type="submit" class="submit-btn">✓ Submit Face</button>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/webcam.js') }}"></script>
+{% endblock %}
